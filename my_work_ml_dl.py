@@ -227,6 +227,7 @@ def make_objective(name, X, y):
     return objective
 
 
+
 class FeatureGraphNet(nn.Module):
     def __init__(self, n_nodes, adj_norm, hidden, n_layers, dropout):
         super().__init__()
@@ -371,6 +372,7 @@ def plot_gnn_history(histories):
 
 
 def plot_importance(model, X_test, y_test, name):
+    
     imp = permutation_importance(model, X_test, y_test, n_repeats=15,
                                  random_state=SEED, scoring="r2")
     s = pd.Series(imp.importances_mean, index=X_test.columns).sort_values().tail(12)
@@ -440,6 +442,12 @@ def main():
     print(f"\nApport du graphe (R2 GNN graphe - R2 GNN sans aretes): {gain:+.5f}")
     print("Resultats dans:", OUT_DIR)
 
+    import joblib 
+    os.makedirs(OUT_DIR , exist_ok = True)
 
+    joblib.dump(
+    {"model": ridge, "features": list(X_train.columns)},
+    os.path.join(OUT_DIR, "ridge_model.joblib"),
+)
 if __name__ == "__main__":
     main()
